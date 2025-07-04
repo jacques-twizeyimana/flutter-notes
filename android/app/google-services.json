@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "748832370596",
+    "firebase_url": "https://angular-ecommerce-94b8b.firebaseio.com",
+    "project_id": "angular-ecommerce-94b8b",
+    "storage_bucket": "angular-ecommerce-94b8b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748832370596:android:ea1de33d635322ea1d5b31",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "748832370596-lrvbgukof0u0904lkqdnku5f7n1u40nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBajaZ3qGTrZUGPbOSmHckPLES9PfqmLzc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "748832370596-h7tnvvughifa01qc674bct71js8v30d9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
