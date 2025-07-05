@@ -13,9 +13,6 @@ class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _isLogin = true;
-  bool _isAuthenticating = false;
-
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
@@ -35,11 +32,8 @@ class _AuthScreenState extends State<AuthScreen> {
       _showSnackBar('Password cannot be empty.');
       return;
     }
-    setState(() {
-      _isAuthenticating = true;
-    });
     try {
-      if (_isLogin) {
+      if (authProvider.isLogin) {
         await authProvider.signIn(email, password);
         _showSnackBar('Login successful');
       } else {
@@ -48,12 +42,6 @@ class _AuthScreenState extends State<AuthScreen> {
       }
     } catch (e) {
       _showSnackBar(e.toString());
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isAuthenticating = false;
-        });
-      }
     }
   }
 
@@ -80,7 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(_isLogin ? 'Login' : 'Sign Up')),
+      appBar: AppBar(title: Text(authProvider.isLogin ? 'Login' : 'Sign Up')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -108,7 +96,8 @@ class _AuthScreenState extends State<AuthScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isAuthenticating ? null : _authenticate,
+                  onPressed:
+                      authProvider.isAuthenticating ? null : _authenticate,
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(color: Colors.grey),
@@ -120,7 +109,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     textStyle: const TextStyle(fontSize: 16),
                   ),
                   child:
-                      _isAuthenticating
+                      authProvider.isAuthenticating
                           ? const SizedBox(
                             height: 20,
                             width: 20,
@@ -131,17 +120,17 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                           )
-                          : Text(_isLogin ? 'Login' : 'Sign Up'),
+                          : Text(authProvider.isLogin ? 'Login' : 'Sign Up'),
                 ),
               ),
               TextButton(
                 onPressed: () {
-                  setState(() {
-                    _isLogin = !_isLogin;
-                  });
+                  authProvider.toggleAuthMode();
                 },
                 child: Text(
-                  _isLogin ? 'Create an account' : 'Already have an account?',
+                  authProvider.isLogin
+                      ? 'Create an account'
+                      : 'Already have an account?',
                 ),
               ),
             ],

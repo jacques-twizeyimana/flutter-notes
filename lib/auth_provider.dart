@@ -10,6 +10,12 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
+  bool _isLogin = true;
+  bool get isLogin => _isLogin;
+
+  bool _isAuthenticating = false;
+  bool get isAuthenticating => _isAuthenticating;
+
   AuthProvider() {
     _auth.authStateChanges().listen((user) {
       _user = user;
@@ -18,15 +24,20 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
+  void toggleAuthMode() {
+    _isLogin = !_isLogin;
+    notifyListeners();
+  }
+
   Future<void> signIn(String email, String password) async {
     try {
-      _isLoading = true;
+      _isAuthenticating = true;
       notifyListeners();
       await _auth.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       rethrow;
     } finally {
-      _isLoading = false;
+      _isAuthenticating = false;
       notifyListeners();
     }
   }
@@ -43,7 +54,7 @@ class AuthProvider with ChangeNotifier {
       );
     }
     try {
-      _isLoading = true;
+      _isAuthenticating = true;
       notifyListeners();
       await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -59,7 +70,7 @@ class AuthProvider with ChangeNotifier {
       }
       rethrow;
     } finally {
-      _isLoading = false;
+      _isAuthenticating = false;
       notifyListeners();
     }
   }
