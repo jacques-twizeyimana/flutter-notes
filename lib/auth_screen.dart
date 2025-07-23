@@ -15,6 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _fullNameController = TextEditingController();
 
   void _showSnackBar(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
     );
@@ -43,13 +44,19 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       if (authProvider.isLogin) {
         await authProvider.signIn(email, password);
-        _showSnackBar('Login successful');
+        if (mounted) {
+          _showSnackBar('Login successful');
+        }
       } else {
         await authProvider.signUp(email, password, fullName);
-        _showSnackBar('Signup successful');
+        if (mounted) {
+          _showSnackBar('Signup successful');
+        }
       }
     } catch (e) {
-      _showSnackBar(e.toString());
+      if (mounted) {
+        _showSnackBar(e.toString());
+      }
     }
   }
 
@@ -72,7 +79,9 @@ class _AuthScreenState extends State<AuthScreen> {
     // If user is already logged in, navigate to NotesListScreen
     if (authProvider.user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pushReplacementNamed('/notes');
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/notes');
+        }
       });
     }
 
