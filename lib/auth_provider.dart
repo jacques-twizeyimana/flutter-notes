@@ -47,7 +47,7 @@ class AuthProvider with ChangeNotifier {
     return password.length >= 6 && specialCharRegex.hasMatch(password);
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String email, String password, String fullName) async {
     if (!_isValidPassword(password)) {
       throw Exception(
         'Password must be at least 6 characters long and contain at least one special character.',
@@ -56,10 +56,15 @@ class AuthProvider with ChangeNotifier {
     try {
       _isAuthenticating = true;
       notifyListeners();
-      await _auth.createUserWithEmailAndPassword(
+      final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // Update the user's display name
+      await userCredential.user?.updateDisplayName(fullName);
+      await userCredential.user?.reload();
+      _user = _auth.currentUser;
     } catch (e) {
       if (e is FirebaseAuthException) {
         print(

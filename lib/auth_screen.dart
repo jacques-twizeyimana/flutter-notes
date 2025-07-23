@@ -12,6 +12,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _fullNameController = TextEditingController();
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -23,6 +24,8 @@ class _AuthScreenState extends State<AuthScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final fullName = _fullNameController.text.trim();
+
     final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+');
     if (!emailRegex.hasMatch(email)) {
       _showSnackBar('Please enter a valid email address.');
@@ -32,12 +35,17 @@ class _AuthScreenState extends State<AuthScreen> {
       _showSnackBar('Password cannot be empty.');
       return;
     }
+    if (!authProvider.isLogin && fullName.isEmpty) {
+      _showSnackBar('Full name cannot be empty.');
+      return;
+    }
+
     try {
       if (authProvider.isLogin) {
         await authProvider.signIn(email, password);
         _showSnackBar('Login successful');
       } else {
-        await authProvider.signUp(email, password);
+        await authProvider.signUp(email, password, fullName);
         _showSnackBar('Signup successful');
       }
     } catch (e) {
@@ -49,6 +57,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _fullNameController.dispose();
     super.dispose();
   }
 
@@ -75,6 +84,17 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              if (!authProvider.isLogin) ...[
+                TextField(
+                  controller: _fullNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Full Name',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.name,
+                ),
+                const SizedBox(height: 16),
+              ],
               TextField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -130,7 +150,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 child: Text(
                   authProvider.isLogin
                       ? 'Create an account'
-                      : 'Already have an account?',
+                      : 'Already have an account? Sign In',
                 ),
               ),
             ],
