@@ -19,43 +19,68 @@ class _NotesListScreenState extends State<NotesListScreen> {
     Provider.of<NotesProvider>(context, listen: false).notes;
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), duration: const Duration(seconds: 2)),
-    );
-  }
-
   Future<void> _addNote() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final notesProvider = Provider.of<NotesProvider>(context, listen: false);
+
     String? noteText = await _showNoteDialog(context);
     if (noteText != null && noteText.isNotEmpty) {
       try {
-        await Provider.of<NotesProvider>(
-          context,
-          listen: false,
-        ).addNote(noteText);
-        _showSnackBar('Note added successfully');
+        await notesProvider.addNote(noteText);
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Note added successfully'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       } catch (e) {
-        _showSnackBar('Failed to add note: ${e.toString()}');
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text('Failed to add note: ${e.toString()}'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
       }
     }
   }
 
   Future<void> _editNote(Note note) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final notesProvider = Provider.of<NotesProvider>(context, listen: false);
+
     String? noteText = await _showNoteDialog(context, initialText: note.text);
     if (noteText != null && noteText.isNotEmpty) {
       try {
-        await Provider.of<NotesProvider>(
-          context,
-          listen: false,
-        ).updateNote(note.id, noteText);
-        _showSnackBar('Note updated successfully');
+        await notesProvider.updateNote(note.id, noteText);
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Note updated successfully'),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
       } catch (e) {
-        _showSnackBar('Failed to update note: ${e.toString()}');
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text('Failed to update note: ${e.toString()}'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
       }
     }
   }
 
   Future<void> _deleteNote(String id) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final notesProvider = Provider.of<NotesProvider>(context, listen: false);
+
     final confirm = await showDialog<bool>(
       context: context,
       builder:
@@ -70,22 +95,36 @@ class _NotesListScreenState extends State<NotesListScreen> {
                 onPressed: () => Navigator.of(context).pop(false),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () => Navigator.of(context).pop(true),
                 child: const Text(
                   'Delete',
                   style: TextStyle(color: Colors.white),
                 ),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: () => Navigator.of(context).pop(true),
               ),
             ],
           ),
     );
     if (confirm != true) return;
     try {
-      await Provider.of<NotesProvider>(context, listen: false).deleteNote(id);
-      _showSnackBar('Note deleted successfully');
+      await notesProvider.deleteNote(id);
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Note deleted successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
     } catch (e) {
-      _showSnackBar('Failed to delete note:  ${e.toString()}');
+      if (mounted) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Failed to delete note: ${e.toString()}'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
