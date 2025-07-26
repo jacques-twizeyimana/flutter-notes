@@ -32,8 +32,12 @@ class _AuthScreenState extends State<AuthScreen> {
       _showSnackBar('Please enter a valid email address.');
       return;
     }
-    if (password.isEmpty) {
-      _showSnackBar('Password cannot be empty.');
+    // password should be atleast 6 characters and contain a special character
+    if (password.length < 6 ||
+        !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(password)) {
+      _showSnackBar(
+        'Password must be at least 6 characters long and contain at least one special character.',
+      );
       return;
     }
     if (!authProvider.isLogin && fullName.isEmpty) {

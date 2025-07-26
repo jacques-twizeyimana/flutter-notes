@@ -42,17 +42,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  bool _isValidPassword(String password) {
-    final specialCharRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
-    return password.length >= 6 && specialCharRegex.hasMatch(password);
-  }
-
   Future<void> signUp(String email, String password, String fullName) async {
-    if (!_isValidPassword(password)) {
-      throw Exception(
-        'Password must be at least 6 characters long and contain at least one special character.',
-      );
-    }
     try {
       _isAuthenticating = true;
       notifyListeners();
