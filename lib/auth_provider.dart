@@ -67,11 +67,11 @@ class AuthProvider with ChangeNotifier {
       _user = _auth.currentUser;
     } catch (e) {
       if (e is FirebaseAuthException) {
-        print(
+        debugPrint(
           'Sign up error: code=${e.code}, message=${e.message}, details=$e',
         );
       } else {
-        print('Sign up error: $e');
+        debugPrint('Sign up error: $e');
       }
       rethrow;
     } finally {

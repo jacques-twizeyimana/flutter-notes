@@ -44,7 +44,7 @@ class NotesService {
 
   User? get currentUser => _auth.currentUser;
 
-  Stream<List<Note>> getNotes() {
+  Stream<List<Note>> fetchNotes() {
     if (currentUser == null) {
       return Stream.value([]);
     }

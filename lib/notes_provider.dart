@@ -20,7 +20,7 @@ class NotesProvider with ChangeNotifier {
   void _startNotesSubscription() {
     _isLoading = true;
     notifyListeners();
-    _notesSubscription = _notesService.getNotes().listen(
+    _notesSubscription = _notesService.fetchNotes().listen(
       (notes) {
         _notes = notes;
         _isLoading = false;
